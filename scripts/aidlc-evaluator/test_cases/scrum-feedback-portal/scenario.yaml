@@ -1,0 +1,8 @@
+name: scrum-feedback-portal
+description: "Scrum + team-owned-inputs workflow — MVP init, pre-defined incremental sprint, and a newly-appended feature"
+status: draft
+vision: vision.md
+tech_env: tech-env.md
+golden_baseline: golden.yaml
+golden_aidlc_docs: golden-aidlc-docs/
+tags: [scrum, team-inputs, research-spike, incremental, draft]
