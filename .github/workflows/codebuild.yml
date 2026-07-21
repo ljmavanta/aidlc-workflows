@@ -107,10 +107,18 @@ jobs:
           fi
 
   build:
-    # Fork PRs are skipped because they cannot access the repository secrets
-    # or OIDC credentials needed for AWS CodeBuild.
+    # AWS-dependent: this job assumes an AWS OIDC role and runs CodeBuild.
+    # It is OPT-IN — set the repository variable ENABLE_CODEBUILD=true (only
+    # where AWS_CODEBUILD_ROLE_ARN and the 'codebuild' environment are
+    # configured). On forks without AWS, leave it unset and this job is skipped,
+    # so tag/push events don't fail on missing AWS credentials. The release zip
+    # is produced independently by release.yml.
+    #
+    # Fork PRs are also skipped because they cannot access repository secrets
+    # or OIDC credentials.
     if: >-
-      (github.event_name != 'pull_request'
+      vars.ENABLE_CODEBUILD == 'true'
+      && (github.event_name != 'pull_request'
       || contains(github.event.pull_request.labels.*.name, 'rules'))
       && (github.event_name != 'pull_request'
       || github.event.pull_request.head.repo.full_name == github.repository)
