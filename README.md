@@ -15,7 +15,8 @@ AI-DLC is an intelligent software development workflow that adapts to your needs
 - [Common](#common)
 - [Platform-Specific Setup](#platform-specific-setup)
 - [Usage](#usage)
-- [Three-Phase Adaptive Workflow](#three-phase-adaptive-workflow)
+- [Team-Owned Inputs](#team-owned-inputs)
+- [Scrum-Based Adaptive Workflow](#scrum-based-adaptive-workflow)
 - [Key Features](#key-features)
 - [Extensions](#extensions)
 - [Supporting Tools](#supporting-tools)
@@ -603,27 +604,48 @@ If your agent has no convention for rules files, place both folders at your proj
 
 ---
 
-## Three-Phase Adaptive Workflow
+## Team-Owned Inputs
 
-AI-DLC follows a structured three-phase approach that adapts to your project's complexity:
+This workflow runs a **Scrum** cadence in which **your team owns intent and engineering direction**. The agent clarifies, validates, and builds — it does **not** invent product vision or choose architecture on your team's behalf.
 
-### 🔵 INCEPTION PHASE
+Provide these inputs under `aidlc-docs/team-inputs/` (the agent will ask for any that are missing before proceeding):
 
-Determines **WHAT** to build and **WHY**
+| Category               | Files                                                                                                          | The agent's role                            |
+| ---------------------- | -------------------------------------------------------------------------------------------------------------- | ------------------------------------------- |
+| **Product Inputs**     | `product-vision.md`, `product-backlog.md`, `task-breakdown.md`, `sprint-plan.md` (optional), `requirements.md` | Validate, flag inconsistencies, suggest     |
+| **Engineering Biases** | `architecture.md`, `coding-conventions.md`, `definition-of-done.md`                                            | Treat as binding constraints; do the coding |
 
-- Requirements analysis and validation
-- User story creation (when applicable)
-- Application Design and creating units of work for parallel development
-- Risk assessment and complexity evaluation
+Your team also owns the **task breakdown**: under each user story, list typed tasks — `design`, `research` (spike), or `coding`. The agent maps each task to the right stage (research runs first and produces findings; design and coding follow), so your stories → sprint plan → tasks model is preserved end to end.
 
-### 🟢 CONSTRUCTION PHASE
+If a required input is missing, the agent runs an **Input Intake Gate** and stops until you provide it or explicitly waive it. Agent output is tagged `[VALIDATION]` (a finding in your input), `[SUGGESTION]` (a proposal needing your approval), or `[EXECUTION]` (work done within your constraints).
 
-Determines **HOW** to build it
+---
 
-- Detailed component design
-- Code generation and implementation
+## Scrum-Based Adaptive Workflow
+
+AI-DLC runs a Scrum cadence layered on a three-phase structure that adapts to your project's complexity. Ceremonies (Backlog Refinement, Sprint Planning, Daily Standup, Sprint Review, Sprint Retrospective) are first-class stages with approval gates.
+
+### 🔵 INCEPTION PHASE — *Product & Sprint Planning*
+
+Determines **WHAT** to build and **WHY** (from your team's inputs)
+
+- **Backlog Refinement** — validate and clarify your product backlog
+- Requirements analysis and validation (validation mode)
+- User story validation against INVEST (when applicable)
+- Application Design within your target architecture; units of work for parallel development
+- **Sprint Planning** — Sprint Goal, Definition of Done, and increment selection
+
+### 🟢 CONSTRUCTION PHASE — *Sprint Execution*
+
+Determines **HOW** to build it — the agent writes code within your architecture and conventions
+
+- **Daily Standup** — per-session status recorded in `sprint-log.md`
+- **Research / Spike** (when the increment has `research` tasks) — resolve unknowns first; produces findings + a recommendation
+- Detailed component design (within your engineering biases)
+- Code generation and implementation (adhering to your coding conventions)
 - Build configuration and testing strategies
-- Quality assurance and validation
+- **Sprint Review** — verify the increment against the Sprint Goal and Definition of Done
+- **Sprint Retrospective** — capture improvements; feed the backlog
 
 ### 🟡 OPERATIONS PHASE
 
@@ -637,14 +659,16 @@ Deployment and monitoring (future)
 
 ## Key Features
 
-| Feature                   | Description                                                                                               |
-| ------------------------- | --------------------------------------------------------------------------------------------------------- |
-| **Adaptive Intelligence** | Only executes stages that add value to your specific request                                              |
-| **Context-Aware**         | Analyzes existing codebase and complexity requirements                                                    |
-| **Risk-Based**            | Complex changes get comprehensive treatment, simple changes stay efficient                                |
-| **Question-Driven**       | Structured multiple-choice questions in files, not chat                                                   |
-| **Always in Control**     | Review execution plans and approve each phase                                                             |
-| **Extensible**            | Layer custom rules e.g. security, compliance, and organization-specific rules on top of the core workflow |
+| Feature                   | Description                                                                                                      |
+| ------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| **Team-Owned Inputs**     | Your team owns vision, backlog, architecture, and conventions; the agent validates and builds within them        |
+| **Scrum Ceremonies**      | Backlog Refinement, Sprint Planning, Daily Standup, Sprint Review, and Retrospective as first-class gated stages |
+| **Adaptive Intelligence** | Only executes stages that add value to your specific request                                                     |
+| **Context-Aware**         | Analyzes existing codebase and complexity requirements                                                           |
+| **Risk-Based**            | Complex changes get comprehensive treatment, simple changes stay efficient                                       |
+| **Question-Driven**       | Structured multiple-choice questions in files, not chat                                                          |
+| **Always in Control**     | Review execution plans and approve each phase                                                                    |
+| **Extensible**            | Layer custom rules e.g. security, compliance, and organization-specific rules on top of the core workflow        |
 
 ---
 

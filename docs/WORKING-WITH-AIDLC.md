@@ -8,7 +8,7 @@ Start with the basics in each section. The advanced tips are drawn from real wor
 
 ## Table of Contents
 
-1. [General Rules](#1-general-rules)
+1. [General Rules](#1-general-rules) (includes Team-Owned Inputs and the Scrum Cadence)
 2. [Inception Phase](#2-inception-phase)
 3. [Construction Phase](#3-construction-phase)
 4. [Never Vibe Code](#4-never-vibe-code)
@@ -16,6 +16,44 @@ Start with the basics in each section. The advanced tips are drawn from real wor
 ---
 
 ## 1. General Rules
+
+### Team-Owned Inputs and the Scrum Cadence
+
+AI-DLC runs a **Scrum** cadence in which **your team owns intent and engineering direction**. The agent's job is to clarify, validate, and build — not to invent your product vision or pick your architecture.
+
+Provide your inputs under `aidlc-docs/team-inputs/`:
+
+| Category               | Files                                                                                                          | What the agent does                                                       |
+| ---------------------- | -------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| **Product Inputs**     | `product-vision.md`, `product-backlog.md`, `task-breakdown.md`, `sprint-plan.md` (optional), `requirements.md` | Validates, flags `[VALIDATION]` findings, offers `[SUGGESTION]` additions |
+| **Engineering Biases** | `architecture.md`, `coding-conventions.md`, `definition-of-done.md`                                            | Treats as binding constraints; does the manual coding within them         |
+
+Your team also owns the **task breakdown**. In `task-breakdown.md`, list typed tasks under each story:
+
+```markdown
+## Story: FB-1 Submit feedback
+
+### Tasks
+- [ ] [research] Spike: WebSocket vs SSE for the live results dashboard
+- [ ] [design] Design the feedback submission API contract
+- [ ] [coding] Implement submission endpoint + form
+```
+
+The agent maps each task to a stage — `research` → a Spike (runs first, produces findings you approve), `design` → the design stages, `coding` → Code Generation. This preserves your **stories → sprint plan → tasks** model.
+
+If a required input is missing when a stage needs it, the agent runs an **Input Intake Gate**: it stops and asks you to either provide the input or explicitly waive it. It will not fabricate vision, stories, or architecture on your behalf.
+
+The workflow is organized around Scrum ceremonies, each a gated stage:
+
+- **Backlog Refinement** (Inception) — the agent validates your backlog and asks about anything unclear
+- **Sprint Planning** (Inception) — set the Sprint Goal, confirm the Definition of Done, select increments
+- **Daily Standup** (Construction) — a per-session status entry in `aidlc-docs/construction/sprint-log.md`
+- **Sprint Review** (Construction) — verify the increment against the Sprint Goal and Definition of Done
+- **Sprint Retrospective** (Construction) — capture improvements; unfinished items return to the backlog
+
+> **Tip**: The more complete your `team-inputs/` are before you start, the fewer intake gates and clarifying questions you'll hit.
+
+---
 
 ### Asking Questions Without Changing Files
 
@@ -206,16 +244,25 @@ This is a production-critical component. Please run at comprehensive depth.
 
 ## 2. Inception Phase
 
-The Inception phase is where you and the AI align on *what to build and why* before any design or code work begins. The more context you bring in here, the fewer clarifying questions and the less rework you'll encounter in Construction.
+The Inception phase is where you and the AI align on *what to build and why* before any design or code work begins. It hosts the **Backlog Refinement** and **Sprint Planning** ceremonies. The more context you bring in here, the fewer intake gates and clarifying questions you'll hit — and the less rework in Construction.
 
 ### Prepare Your Inputs Before Starting
 
-The single most effective thing you can do before kicking off AIDLC is prepare two documents:
+Because your team owns intent and engineering direction, the most effective thing you can do before kicking off AIDLC is populate `aidlc-docs/team-inputs/`:
 
-1. **Vision Document** — what to build and why
-2. **Technical Environment Document** — what tools and constraints apply
+**Product Inputs** (what to build and why — the agent validates these):
 
-These documents dramatically reduce the number of clarifying questions AIDLC will ask and ensure the AI starts from your team's actual context rather than making assumptions.
+1. `product-vision.md` — vision, MVP scope, out-of-scope, open questions
+2. `product-backlog.md` — your user stories / backlog items
+3. `requirements.md` — requirements, if you keep them separate from the backlog
+
+**Engineering Biases** (how to build it — the agent treats these as binding constraints):
+
+1. `architecture.md` — target architecture and patterns
+2. `coding-conventions.md` — naming, structure, testing, and language/framework idioms
+3. `definition-of-done.md` — your completion standard, enforced at Sprint Review
+
+These dramatically reduce intake gates and clarifying questions, and ensure the AI starts from your team's actual context rather than making assumptions. The existing writing-inputs guides map onto these files: the Vision Document → `product-vision.md`, and the Technical Environment Document → `architecture.md` + `coding-conventions.md`.
 
 **Where to start:**
 
@@ -356,7 +403,7 @@ Then confirm whether they are required for code generation.
 
 ## 3. Construction Phase
 
-The Construction phase is where designs become code. Each unit of work goes through a series of design stages (conditional) followed by Code Generation (always). After all units are complete, Build and Test closes out the work.
+The Construction phase is the **Sprint** — where designs become code. Each unit of work is an increment whose typed tasks run in order — any **Research / Spike** tasks first (each produces findings you approve, which then bind the design), followed by design stages (conditional) and Code Generation (always), with a **Daily Standup** entry logged each work session. The agent writes code within your `architecture.md` and `coding-conventions.md`. After all increments are complete, Build and Test closes out the work, then **Sprint Review** verifies the increment against the Sprint Goal and Definition of Done, and **Sprint Retrospective** captures improvements and returns any unfinished items to the backlog.
 
 ### The Design Review Process
 
