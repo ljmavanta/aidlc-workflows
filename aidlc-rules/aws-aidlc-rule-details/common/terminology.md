@@ -1,5 +1,51 @@
 # AI-DLC Terminology Glossary
 
+## Scrum Terminology
+
+This workflow runs a Scrum cadence layered on the three-phase structure. See `scrum-ceremonies.md` and `team-inputs.md`.
+
+| Term | Meaning in this workflow |
+| ---------------------- | --------------------------------------------------------------------------- |
+| **Product Backlog**    | The team's ordered list of desired work — sourced from `team-inputs/product-backlog.md` and refined during Backlog Refinement |
+| **Sprint Backlog**     | The increments/units selected for the current sprint during Sprint Planning |
+| **Sprint**             | One pass through the CONSTRUCTION per-increment loop |
+| **Increment**          | The working, tested output of a sprint that meets the Definition of Done (≈ a Unit of Work) |
+| **Sprint Goal**        | The objective of the sprint, defined at Sprint Planning |
+| **Definition of Done** | The team's completion standard (`team-inputs/definition-of-done.md`), enforced at Sprint Review |
+| **Backlog Refinement** | Ceremony: validate and clarify the team backlog (ALWAYS) |
+| **Sprint Planning**    | Ceremony: select increments, set Sprint Goal, confirm DoD (ALWAYS; formerly Workflow Planning) |
+| **Daily Standup**      | Ceremony: per-session checkpoint logged in `sprint-log.md` (ALWAYS, non-blocking) |
+| **Sprint Review**      | Ceremony: verify increment vs Sprint Goal and DoD (ALWAYS) |
+| **Sprint Retrospective** | Ceremony: capture improvements, feed backlog (ALWAYS) |
+| **Task**               | A team-owned, typed work item under a story (`research`/`design`/`coding`) in `team-inputs/task-breakdown.md` |
+| **Research / Spike**   | A `research`-typed task: a time-boxed investigation that produces findings + a recommendation, run before design (`construction/research-spike.md`) |
+
+### Task Types
+
+| Type | Alias | Runs as |
+| --------- | ------- | ------------------------------------------------------ |
+| `research` | `spike` | Research / Spike stage (first in the increment loop)   |
+| `design`  | —       | Functional / NFR / Infrastructure Design               |
+| `coding`  | `code`  | Code Generation                                        |
+
+### Term Mappings (legacy → Scrum framing)
+
+- **Requirements / Intent** → refined into the **Product Backlog**
+- **Unit of Work** → a sprint **Increment**
+- **Workflow Planning** → **Sprint Planning**
+- **Build and Test completion** → feeds **Sprint Review**
+
+## Team Inputs Terminology
+
+| Term | Meaning |
+| ------------------- | ------------------------------------------------------------------------------- |
+| **Product Inputs**  | Team-owned intent: product vision, backlog, requirements. Agent validates only  |
+| **Engineering Biases** | Team-owned direction: architecture, coding conventions, DoD. Binding constraints |
+| **Input Intake Gate** | Hard-blocking check that stops a stage until a required input is provided or waived |
+| **`[VALIDATION]`**  | An inconsistency/gap the agent found in a team input (needs team resolution)     |
+| **`[SUGGESTION]`**  | An agent-proposed addition (needs explicit team approval; never silently merged) |
+| **`[EXECUTION]`**   | Work the agent performs within the team's constraints (code, tests, design)      |
+
 ## Core Terminology
 
 ### Phase vs Stage

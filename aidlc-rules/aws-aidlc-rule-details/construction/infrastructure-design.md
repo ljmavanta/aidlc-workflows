@@ -6,7 +6,9 @@
 - Execution plan must indicate Infrastructure Design stage should execute
 
 ## Overview
-Map logical software components to actual infrastructure choices for deployment environments.
+Map logical software components to actual infrastructure choices for deployment environments, **within the team's target architecture and platform biases**.
+
+**Team biases as constraints**: Load `team-inputs/architecture.md` (see `common/team-inputs.md`). Infrastructure/platform choices (cloud provider, deployment model, services) must conform to the team's architecture. Flag conflicts as `[VALIDATION]`; propose alternatives only as `[SUGGESTION]`. If the architecture bias is absent, run the Input Intake Gate before choosing a platform.
 
 ## Steps to Execute
 

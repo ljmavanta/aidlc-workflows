@@ -1,19 +1,28 @@
-# User Stories - Detailed Steps
+# User Stories - Detailed Steps (Validation Mode)
 
 ## Purpose
-**Convert requirements into user-centered stories with acceptance criteria**
+**Validate and clarify the team's user stories; suggest additions — do NOT author the team's stories**
 
-User Stories focus on:
-- Translating business requirements into user-centered narratives
-- Defining clear acceptance criteria for each story
-- Creating user personas that represent different stakeholder types
-- Establishing shared understanding across teams
-- Providing testable specifications for implementation
+The team owns the product backlog and its user stories. In this workflow, User Stories focuses on:
+- Validating team-provided stories against INVEST and their acceptance criteria
+- Flagging inconsistencies, overlaps, and gaps as `[VALIDATION]` findings
+- Proposing clearly-marked `[SUGGESTION]` additions (splits, edge cases, missing personas) for team approval
+- Establishing shared understanding without replacing the team's authorship
+
+**See [team-inputs.md](../common/team-inputs.md) for the input contract and Input Intake Gate.**
 
 ## Prerequisites
 - Workspace Detection must be complete
-- Requirements Analysis recommended (can reference requirements if available)
-- Workflow Planning must indicate User Stories stage should execute
+- Backlog Refinement complete (refined backlog available)
+- Requirements Analysis recommended (can reference validated requirements)
+- Sprint Planning must indicate User Stories stage should execute
+
+## Required Inputs (Intake Gate)
+
+Run the Input Intake Gate from `team-inputs.md` for the team's user stories (`aidlc-docs/team-inputs/product-backlog.md` and/or stories referenced in the refined backlog).
+
+- **If present**: validate and clarify; do NOT invent stories wholesale.
+- **If absent**: STOP and raise the blocking gate asking the team to provide stories or explicitly waive this stage. Do NOT fabricate user stories.
 
 ## Intelligent Assessment Guidelines
 
@@ -115,11 +124,11 @@ For medium priority cases, execute user stories if ANY of these apply:
 - [How stories will improve project success]
 ```
 
-## Step 2: Create Story Plan
-- Assume the role of a product owner
-- Generate a comprehensive plan with step-by-step execution checklist for story development
+## Step 2: Create Story Validation Plan
+- Assume the role of a facilitator working with the team's Product Owner (not the Product Owner)
+- Generate a comprehensive plan with step-by-step execution checklist for story **validation and clarification**
 - Each step and sub-step should have a checkbox []
-- Focus on methodology and approach for converting requirements into user stories
+- Focus on validating team-provided stories, flagging `[VALIDATION]` findings, and drafting `[SUGGESTION]` additions — not authoring stories from scratch
 
 ## Step 3: Generate Context-Appropriate Questions
 **DIRECTIVE**: Thoroughly analyze the requirements and context to identify ALL areas where clarification would improve story quality and team understanding. Be proactive in asking questions to ensure comprehensive user story development.
@@ -145,11 +154,12 @@ For medium priority cases, execute user stories if ANY of these apply:
 
 ## Step 4: Include Mandatory Story Artifacts in Plan
 - **ALWAYS** include these mandatory artifacts in the story plan:
-  - [ ] Generate stories.md with user stories following INVEST criteria
-  - [ ] Generate personas.md with user archetypes and characteristics
-  - [ ] Ensure stories are Independent, Negotiable, Valuable, Estimable, Small, Testable
-  - [ ] Include acceptance criteria for each story
+  - [ ] Generate stories.md as a **validated** view of the team's stories (reference the team backlog as source of truth; do not replace it)
+  - [ ] Assess each story against INVEST (Independent, Negotiable, Valuable, Estimable, Small, Testable) and record `[VALIDATION]` findings
+  - [ ] Generate personas.md from team-provided personas; flag missing personas as `[SUGGESTION]`
+  - [ ] Verify acceptance criteria exist for each story; flag gaps
   - [ ] Map personas to relevant user stories
+  - [ ] List `[SUGGESTION]` additions separately for explicit team approval (never silently merged)
 
 ## Step 5: Present Story Options
 - Include different approaches for story breakdown in the plan document:
@@ -281,7 +291,7 @@ If the analysis in step 9 reveals ANY ambiguous answers, you MUST:
 > **You may:**
 >
 > 🔧 **Request Changes** -  Ask for modifications to the stories or personas based on your review  
-> ✅ **Approve & Continue** - Approve user stories and proceed to **Workflow Planning**
+> ✅ **Approve & Continue** - Approve validated user stories and proceed to **Sprint Planning**
 
 ---
 ```

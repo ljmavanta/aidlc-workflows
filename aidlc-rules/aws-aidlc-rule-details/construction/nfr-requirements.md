@@ -6,7 +6,14 @@
 - Execution plan must indicate NFR Requirements stage should execute
 
 ## Overview
-Determine non-functional requirements for the unit and make tech stack choices.
+Determine non-functional requirements for the unit and make tech stack choices **within the team's engineering biases**.
+
+## Team Engineering Biases (Intake Gate)
+
+Before making any tech stack choice, load the team's engineering biases (`team-inputs/architecture.md`, `team-inputs/coding-conventions.md`) per `common/team-inputs.md`.
+
+- **If present**: tech stack and NFR patterns must conform to them. Do NOT select a stack that conflicts with the team's architecture; raise `[VALIDATION]` findings where NFRs and the team's stack conflict, and offer alternatives only as `[SUGGESTION]`.
+- **If absent**: run the Input Intake Gate — ask the team to provide their stack/architecture bias or explicitly waive (a waiver authorizes the agent to propose a stack as `[SUGGESTION]` for approval).
 
 ## Steps to Execute
 

@@ -1,14 +1,23 @@
-# Requirements Analysis (Adaptive)
+# Requirements Analysis (Adaptive, Validation Mode)
 
-**Assume the role** of a product owner
+**Assume the role** of a facilitator working with the team's Product Owner — **not** the Product Owner. The team owns requirements; you validate, clarify, and suggest.
 
 **Adaptive Phase**: Always executes. Detail level adapts to problem complexity.
 
 **See [depth-levels.md](../common/depth-levels.md) for adaptive depth explanation**
+**See [team-inputs.md](../common/team-inputs.md) for the input contract and Input Intake Gate**
 
 ## Prerequisites
 - Workspace Detection must be complete
 - Reverse Engineering must be complete (if brownfield)
+- Backlog Refinement must be complete (refined backlog available)
+
+## Required Inputs (Intake Gate)
+
+Run the Input Intake Gate from `team-inputs.md` for team requirements: the refined backlog (from Backlog Refinement) and, if kept separate, `aidlc-docs/team-inputs/requirements.md`.
+
+- **If present**: treat as the source of truth. Operate in **validation mode** — validate, clarify, and suggest; do NOT author requirements from scratch.
+- **If absent** (no backlog, no requirements): STOP and raise the blocking gate asking the team to provide or explicitly waive. Do NOT fabricate requirements.
 
 ## Execution Steps
 
@@ -68,13 +77,16 @@
 - High risk or critical system
 - Detailed requirements with traceability needed
 
-### Step 4: Assess Current Requirements
+### Step 4: Load Team Requirements as Source of Truth
 
-Analyze whatever the user has provided:
+Load the team-owned requirements (the authoritative baseline) and analyze them:
+   - The refined backlog from Backlog Refinement (`aidlc-docs/inception/backlog/refined-backlog.md`)
+   - `aidlc-docs/team-inputs/requirements.md` (if kept separate)
    - Intent statements or descriptions (already logged in audit.md)
-   - Existing requirements documents (search workspace if mentioned)
-   - Pasted content or file references
-   - Convert any non-markdown documents to markdown format 
+   - Pasted content or file references the team supplied
+   - Convert any non-markdown documents to markdown format (never alter team intent)
+
+**Validation-mode reminder**: Your job is to validate and clarify these inputs, not replace them. Tag every finding `[VALIDATION]` and every proposed addition `[SUGGESTION]` (needs team approval).
 
 ### Step 5: Thorough Completeness Analysis
 
@@ -123,17 +135,19 @@ After receiving answers:
 DO NOT proceed to Step 7 until all questions in requirement-verification-questions.md are answered and validated.
 Present the question file to the user and STOP.
 
-### Step 7: Generate Requirements Document
+### Step 7: Generate Requirements Validation Document
    - **PREREQUISITE**: Step 6 gate must be passed — all answers received and analyzed
-   - Create `aidlc-docs/inception/requirements/requirements.md`
+   - Create `aidlc-docs/inception/requirements/requirements.md` as a **validation/consolidation report** over the team's requirements (not agent-authored requirements)
    - Include intent analysis summary at the top:
      - User request
      - Request type
      - Scope estimate
      - Complexity estimate
-   - Include both functional and non-functional requirements
-   - Incorporate user's answers to clarifying questions
-   - Provide brief summary of key requirements
+   - Reference the team's requirements as the source of truth (do not copy-replace them)
+   - Record resolved `[VALIDATION]` findings (inconsistencies/gaps) and how the team decided each
+   - Record approved `[SUGGESTION]` additions (attributed as agent-proposed, team-approved); list rejected ones briefly
+   - Incorporate the team's answers to clarifying questions
+   - Provide brief summary of key requirements as validated
 
 ### Step 8: Update State Tracking
 

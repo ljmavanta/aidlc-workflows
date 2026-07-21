@@ -18,13 +18,15 @@ Functional Design focuses on:
 - Execution plan must indicate Functional Design stage should execute
 
 ## Overview
-Design detailed business logic for the unit, technology-agnostic and focused purely on business functions.
+Design detailed business logic for the unit, technology-agnostic and focused purely on business functions. This addresses the unit's `design` tasks and MUST honor any approved `research`/spike recommendation for the unit.
 
 ## Steps to Execute
 
 ### Step 1: Analyze Unit Context
 - Read unit definition from `aidlc-docs/inception/application-design/unit-of-work.md`
 - Read assigned stories from `aidlc-docs/inception/application-design/unit-of-work-story-map.md`
+- Read the unit's typed tasks from `aidlc-docs/inception/application-design/unit-of-work-task-map.md` (address the `design` tasks here)
+- **If a spike ran for this unit**: read the approved findings from `aidlc-docs/construction/{unit-name}/research/` and treat the recommendation as a binding input
 - Understand unit responsibilities and boundaries
 
 ### Step 2: Create Functional Design Plan

@@ -6,7 +6,9 @@
 - Execution plan must indicate NFR Design stage should execute
 
 ## Overview
-Incorporate NFR requirements into unit design using patterns and logical components.
+Incorporate NFR requirements into unit design using patterns and logical components, **conforming to the team's target architecture**.
+
+**Team biases as constraints**: Load `team-inputs/architecture.md` and `team-inputs/coding-conventions.md` (see `common/team-inputs.md`). NFR design patterns must be consistent with the team's architecture. Flag conflicts as `[VALIDATION]`; propose alternatives only as `[SUGGESTION]`. If the biases are absent, run the Input Intake Gate.
 
 ## Steps to Execute
 

@@ -1,9 +1,10 @@
 # Application Design - Detailed Steps
 
 ## Purpose
-**High-level component identification and service layer design**
+**High-level component identification and service layer design — within the team's target architecture**
 
 Application Design focuses on:
+- Applying the team's target architecture (`team-inputs/architecture.md`) as a binding constraint
 - Identifying main functional components and their responsibilities
 - Defining component interfaces (not detailed business logic)
 - Designing service layer for orchestration
@@ -11,11 +12,20 @@ Application Design focuses on:
 
 **Note**: Detailed business logic design happens later in Functional Design (per-unit, CONSTRUCTION phase)
 
+**See [team-inputs.md](../common/team-inputs.md) for the input contract and Input Intake Gate.**
+
 ## Prerequisites
 - Workspace Detection must be complete
 - Requirements Analysis recommended (provides functional context)
 - User Stories recommended (user stories guide design decisions)
-- Execution plan must indicate Application Design stage should execute
+- Execution plan (sprint plan) must indicate Application Design stage should execute
+
+## Required Inputs (Intake Gate)
+
+Run the Input Intake Gate from `team-inputs.md` for the **target architecture** (`aidlc-docs/team-inputs/architecture.md`).
+
+- **If present**: treat the team's architecture as a **binding constraint**. Your design must conform to it. Validate requirements against it and raise `[VALIDATION]` findings where they conflict; offer `[SUGGESTION]` proposals only.
+- **If absent**: STOP and raise the blocking gate. Do NOT choose an architectural style unprompted — ask the team to provide `architecture.md` or explicitly waive (a waiver authorizes the agent to propose an architecture as `[SUGGESTION]` for team approval).
 
 ## Step-by-Step Execution
 

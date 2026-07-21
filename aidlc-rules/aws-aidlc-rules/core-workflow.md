@@ -24,7 +24,23 @@ All subsequent rule detail file references (e.g., `common/process-overview.md`, 
 - Load `common/session-continuity.md` for session resumption guidance
 - Load `common/content-validation.md` for content validation requirements
 - Load `common/question-format-guide.md` for question formatting rules
+- Load `common/team-inputs.md` for the team-input contract and the mandatory Input Intake Gate
+- Load `common/scrum-ceremonies.md` for the Scrum ceremony map and sprint loop
+- Load `common/daily-standup.md` for the per-session checkpoint used during Sprint Execution
 - Reference these throughout the workflow execution
+
+## MANDATORY: Team-Owned Inputs (Input Intake Gates)
+
+**CRITICAL**: This workflow runs a **Scrum** cadence in which the **team owns intent and engineering direction**. The agent clarifies, validates, and builds — it does NOT invent product vision or choose architecture on the team's behalf.
+
+- **Product Inputs** (team-owned): product vision, product backlog / user stories, the typed **task breakdown** (design / research / coding tasks under each story), and an optional sprint plan. The agent validates them, flags inconsistencies, and offers clearly-marked suggestions.
+- **Engineering Biases** (team-owned): target architecture, coding conventions, Definition of Done. The agent treats them as binding constraints and does the manual coding within them.
+
+Whenever a stage declares a **Required Input**, run the **Input Intake Gate** defined in `common/team-inputs.md` BEFORE the stage's work:
+- **If present**: load it as the source of truth and operate in validation/execution mode (validate, clarify, suggest — never re-author).
+- **If absent**: STOP, do not fabricate, and raise the blocking gate asking the team to provide or explicitly waive the input. Log the prompt and response in audit.md and record the resolution in `aidlc-docs/aidlc-state.md` under `## Team Inputs`.
+
+Mark agent output consistently with `[VALIDATION]` (finding in a team input), `[SUGGESTION]` (agent proposal needing approval), and `[EXECUTION]` (work performed within constraints).
 
 ## MANDATORY: Extensions Loading (Context-Optimized)
 **CRITICAL**: At workflow start, scan the `extensions/` directory recursively but load ONLY lightweight opt-in files — NOT full rule files. Full rule files are loaded on-demand after the user opts in.
@@ -78,20 +94,23 @@ All subsequent rule detail file references (e.g., `common/process-overview.md`, 
 
 ---
 
-# INCEPTION PHASE
+# INCEPTION PHASE — Product & Sprint Planning
 
-**Purpose**: Planning, requirements gathering, and architectural decisions
+**Purpose**: Refine the team's Product Backlog, validate intent, and plan the sprint
 
-**Focus**: Determine WHAT to build and WHY
+**Focus**: Determine WHAT to build and WHY (from team-owned inputs) and WHAT goes into this sprint
+
+**Scrum framing**: This phase hosts the **Backlog Refinement** and **Sprint Planning** ceremonies (see `common/scrum-ceremonies.md`).
 
 **Stages in INCEPTION PHASE**:
 - Workspace Detection (ALWAYS)
 - Reverse Engineering (CONDITIONAL - Brownfield only)
-- Requirements Analysis (ALWAYS - Adaptive depth)
-- User Stories (CONDITIONAL)
-- Workflow Planning (ALWAYS)
-- Application Design (CONDITIONAL)
-- Units Generation (CONDITIONAL)
+- Backlog Refinement (ALWAYS - Scrum ceremony)
+- Requirements Analysis (ALWAYS - Adaptive depth, validation mode)
+- User Stories (CONDITIONAL - validation mode)
+- Application Design (CONDITIONAL - team architecture as constraint)
+- Units Generation (CONDITIONAL - decompose backlog into sprint increments)
+- Sprint Planning (ALWAYS - Scrum ceremony; formerly Workflow Planning)
 
 ---
 
@@ -136,7 +155,21 @@ All subsequent rule detail file references (e.g., `common/process-overview.md`, 
 4. **Wait for Explicit Approval**: Present detailed completion message (see reverse-engineering.md for message format) - DO NOT PROCEED until user confirms
 5. **MANDATORY**: Log user's response in audit.md with complete raw input
 
-## Requirements Analysis (ALWAYS EXECUTE - Adaptive Depth)
+## Backlog Refinement (ALWAYS EXECUTE - Scrum Ceremony)
+
+**Purpose**: Ingest and validate the team's Product Backlog. The agent refines and clarifies — it does NOT author the backlog.
+
+**Execution**:
+1. **MANDATORY**: Log any user input during this stage in audit.md
+2. Load all steps from `inception/backlog-refinement.md`
+3. **MANDATORY - Input Intake Gate**: Run the gate from `common/team-inputs.md` for the Product Inputs (`product-vision.md`, `product-backlog.md`, `task-breakdown.md`, and `requirements.md` if separate). If any required input is absent, STOP and raise the blocking gate — do NOT fabricate vision, backlog items, requirements, or tasks.
+4. Validate the backlog (consistency, INVEST quality, gaps, ambiguity, overlap) AND the task breakdown (every story has typed tasks; every task has a valid type and maps to a stage); raise `[VALIDATION]` findings and `[SUGGESTION]` proposals
+5. **Wait for Explicit Approval**: Present completion message (see backlog-refinement.md) - DO NOT PROCEED until user confirms
+6. **MANDATORY**: Log user's response in audit.md with complete raw input
+
+## Requirements Analysis (ALWAYS EXECUTE - Adaptive Depth, Validation Mode)
+
+**Validation mode**: The team owns requirements. If team-provided requirements exist (from Backlog Refinement / `team-inputs/`), the agent validates and clarifies them rather than authoring them. If none exist, run the Input Intake Gate from `common/team-inputs.md` before proceeding.
 
 **Always executes** but depth varies based on request clarity and complexity:
 - **Minimal**: Simple, clear request - just document intent analysis
@@ -226,19 +259,22 @@ All subsequent rule detail file references (e.g., `common/process-overview.md`, 
 9. **Wait for Explicit Approval**: Follow approval format from user-stories.md detailed steps - DO NOT PROCEED until user confirms
 10. **MANDATORY**: Log user's response in audit.md with complete raw input
 
-## Workflow Planning (ALWAYS EXECUTE)
+## Sprint Planning (ALWAYS EXECUTE - Scrum Ceremony)
+
+**Formerly Workflow Planning.** Selects backlog items (increments/units) for the sprint, defines the **Sprint Goal**, and confirms the **Definition of Done**.
 
 1. **MANDATORY**: Log any user input during this phase in audit.md
 2. Load all steps from `inception/workflow-planning.md`
 3. **MANDATORY**: Load content validation rules from `common/content-validation.md`
 4. Load all prior context:
    - Reverse engineering artifacts (if brownfield)
-   - Intent analysis
-   - Requirements (if executed)
+   - Refined backlog (from Backlog Refinement)
+   - Requirements (validated)
    - User stories (if executed)
-5. Execute workflow planning:
-   - Determine which phases to execute
-   - Determine depth level for each phase
+5. Execute sprint planning:
+   - Define the Sprint Goal and confirm the Definition of Done (`team-inputs/definition-of-done.md`)
+   - Select which backlog increments/units are in this sprint
+   - Determine which phases/stages to execute and their depth level
    - Create multi-package change sequence (if brownfield)
    - Generate workflow visualization (VALIDATE Mermaid syntax before writing)
 6. **MANDATORY**: Validate all content before file creation per content-validation.md rules
@@ -288,28 +324,55 @@ All subsequent rule detail file references (e.g., `common/process-overview.md`, 
 
 ---
 
-# 🟢 CONSTRUCTION PHASE
+# 🟢 CONSTRUCTION PHASE — Sprint Execution
 
-**Purpose**: Detailed design, NFR implementation, and code generation
+**Purpose**: Build the sprint's increments within the team's engineering biases, then review and reflect
 
-**Focus**: Determine HOW to build it
+**Focus**: Determine HOW to build it — the agent does the manual coding, adhering to the team's architecture and coding conventions
+
+**Scrum framing**: This phase is the **Sprint** itself. It hosts the **Daily Standup**, **Sprint Review**, and **Sprint Retrospective** ceremonies (see `common/scrum-ceremonies.md`). Each Unit of Work is an increment.
 
 **Stages in CONSTRUCTION PHASE**:
-- Per-Unit Loop (executes for each unit):
+- Per-Increment Sprint Loop (executes for each unit/increment):
+  - Daily Standup checkpoint (ALWAYS - per work session; see `common/daily-standup.md`)
+  - Research / Spike (CONDITIONAL, per-unit — runs FIRST when the increment has `research` tasks)
   - Functional Design (CONDITIONAL, per-unit)
   - NFR Requirements (CONDITIONAL, per-unit)
   - NFR Design (CONDITIONAL, per-unit)
   - Infrastructure Design (CONDITIONAL, per-unit)
-  - Code Generation (ALWAYS, per-unit)
-- Build and Test (ALWAYS - after all units complete)
+  - Code Generation (ALWAYS, per-unit — adheres to team coding conventions)
+- Build and Test (ALWAYS - after all sprint increments complete)
+- Sprint Review (ALWAYS - Scrum ceremony; verifies increment vs Sprint Goal & Definition of Done)
+- Sprint Retrospective (ALWAYS - Scrum ceremony; captures improvements, feeds backlog)
 
-**Note**: Each unit is completed fully (design + code) before moving to the next unit.
+**Note**: Each increment is completed fully (design + code) before moving to the next. Design stages apply the team's engineering biases as binding constraints (see `common/team-inputs.md`).
 
 ---
 
-## Per-Unit Loop (Executes for Each Unit)
+## Per-Increment Sprint Loop (Executes for Each Unit)
 
-**For each unit of work, execute the following stages in sequence:**
+**For each unit of work (increment), execute the following stages in sequence:**
+
+### Daily Standup Checkpoint (ALWAYS - per work session)
+
+**Execution**:
+1. Load all steps from `common/daily-standup.md`
+2. At the start of each work session and before starting a new increment, record a standup entry in `aidlc-docs/construction/sprint-log.md` (Done / Next / Impediments / Blocking gates)
+3. This is NOT an approval gate — it does not block — but it MUST be recorded honestly. Surface any open Input Intake Gate or unresolved `[VALIDATION]` finding as an impediment.
+
+### Research / Spike (CONDITIONAL, per-unit — runs FIRST)
+
+**Execute IF** the increment has one or more `research` (spike) tasks in the team task breakdown.
+
+**Skip IF** the increment has no research tasks.
+
+**Execution**:
+1. **MANDATORY**: Log any user input during this stage in audit.md
+2. Load all steps from `construction/research-spike.md`
+3. Resolve each spike's unknown; produce a findings + recommendation artifact. The recommendation is a `[SUGGESTION]` until the team approves it
+4. **MANDATORY**: Present the 2-option completion message as defined in research-spike.md
+5. **Wait for Explicit Approval**: User chooses "Request Changes" or "Approve & Continue" - DO NOT PROCEED until user confirms. The approved recommendation becomes a binding input to this increment's design and coding tasks
+6. **MANDATORY**: Log user's response in audit.md with complete raw input
 
 ### Functional Design (CONDITIONAL, per-unit)
 
@@ -398,11 +461,12 @@ All subsequent rule detail file references (e.g., `common/process-overview.md`, 
 **Execution**:
 1. **MANDATORY**: Log any user input during this stage in audit.md
 2. Load all steps from `construction/code-generation.md`
-3. **PART 1 - Planning**: Create code generation plan with checkboxes, get user approval
-4. **PART 2 - Generation**: Execute approved plan to generate code for this unit
-5. **MANDATORY**: Present standardized 2-option completion message as defined in code-generation.md - DO NOT use emergent behavior
-6. **Wait for Explicit Approval**: User must choose between "Request Changes" or "Continue to Next Stage" - DO NOT PROCEED until user confirms
-7. **MANDATORY**: Log user's response in audit.md with complete raw input
+3. **MANDATORY - Input Intake Gate**: Run the gate from `common/team-inputs.md` for the Engineering Biases (`architecture.md`, `coding-conventions.md`). The agent does the manual coding and MUST adhere to these constraints. If absent, STOP and raise the blocking gate — do NOT choose an architecture or conventions unprompted.
+4. **PART 1 - Planning**: Create code generation plan with checkboxes, get user approval
+5. **PART 2 - Generation**: Execute approved plan to generate code for this unit, adhering to team coding conventions and architecture
+6. **MANDATORY**: Present standardized 2-option completion message as defined in code-generation.md - DO NOT use emergent behavior
+7. **Wait for Explicit Approval**: User must choose between "Request Changes" or "Continue to Next Stage" - DO NOT PROCEED until user confirms
+8. **MANDATORY**: Log user's response in audit.md with complete raw input
 
 ---
 
@@ -417,8 +481,35 @@ All subsequent rule detail file references (e.g., `common/process-overview.md`, 
    - Performance test instructions (if applicable)
    - Additional test instructions as needed (contract tests, security tests, e2e tests)
 4. Create instruction files in build-and-test/ subdirectory: build-instructions.md, unit-test-instructions.md, integration-test-instructions.md, performance-test-instructions.md, build-and-test-summary.md
-5. **Wait for Explicit Approval**: Ask: "**Build and test instructions complete. Ready to proceed to Operations stage?**" - DO NOT PROCEED until user confirms
+5. **Wait for Explicit Approval**: Ask: "**Build and test instructions complete. Ready to proceed to Sprint Review?**" - DO NOT PROCEED until user confirms
 6. **MANDATORY**: Log user's response in audit.md with complete raw input
+
+---
+
+## Sprint Review (ALWAYS EXECUTE - Scrum Ceremony)
+
+**Purpose**: Verify the sprint's increment against the Sprint Goal and Definition of Done, using the Build and Test outputs.
+
+1. **MANDATORY**: Log any user input during this stage in audit.md
+2. Load all steps from `construction/sprint-review.md`
+3. **MANDATORY - Input Intake Gate**: Run the gate from `common/team-inputs.md` for the Definition of Done (`definition-of-done.md`). An increment cannot be certified "Done" without it unless the team explicitly waives.
+4. Verify each committed story/backlog item and each DoD criterion with tested evidence; record unfinished items to return to the Product Backlog
+5. **Wait for Explicit Approval**: Present completion message (see sprint-review.md) - DO NOT PROCEED until user confirms
+6. **MANDATORY**: Log user's response in audit.md with complete raw input
+
+---
+
+## Sprint Retrospective (ALWAYS EXECUTE - Scrum Ceremony)
+
+**Purpose**: Reflect on the sprint and capture improvement action items; feed backlog-affecting items back to the team.
+
+1. **MANDATORY**: Log any user input during this stage in audit.md
+2. Load all steps from `construction/sprint-retrospective.md`
+3. Facilitate reflection grounded in the sprint log and audit trail (what went well / to improve / action items)
+4. Classify each action item's destination; propose backlog/convention changes as `[SUGGESTION]` items requiring team approval (never silently change team inputs)
+5. **Wait for Explicit Approval**: Present completion message (see sprint-retrospective.md) - DO NOT PROCEED until user confirms
+6. **MANDATORY**: Log user's response in audit.md with complete raw input
+7. **If more backlog remains**: return to **Sprint Planning** for the next sprint. Otherwise proceed to Operations.
 
 ---
 
@@ -513,21 +604,35 @@ The Operations stage will eventually include:
 ├── [project-specific structure]    # Varies by project (see code-generation.md)
 │
 ├── aidlc-docs/                     # 📄 DOCUMENTATION ONLY
+│   ├── team-inputs/                # 👥 TEAM-OWNED INPUTS (product + engineering biases)
+│   │   ├── product-vision.md
+│   │   ├── product-backlog.md
+│   │   ├── task-breakdown.md       # Typed tasks (design/research/coding) under each story
+│   │   ├── sprint-plan.md          # (optional) team-authored sprint scope/sequence
+│   │   ├── requirements.md         # (if kept separate from backlog)
+│   │   ├── architecture.md
+│   │   ├── coding-conventions.md
+│   │   └── definition-of-done.md
 │   ├── inception/                  # 🔵 INCEPTION PHASE
 │   │   ├── plans/
 │   │   ├── reverse-engineering/    # Brownfield only
+│   │   ├── backlog/                # Backlog Refinement artifacts
 │   │   ├── requirements/
 │   │   ├── user-stories/
 │   │   └── application-design/
-│   ├── construction/               # 🟢 CONSTRUCTION PHASE
+│   ├── construction/               # 🟢 CONSTRUCTION PHASE (Sprint Execution)
 │   │   ├── plans/
 │   │   ├── {unit-name}/
+│   │   │   ├── research/           # Spike findings + recommendations
 │   │   │   ├── functional-design/
 │   │   │   ├── nfr-requirements/
 │   │   │   ├── nfr-design/
 │   │   │   ├── infrastructure-design/
 │   │   │   └── code/               # Markdown summaries only
-│   │   └── build-and-test/
+│   │   ├── build-and-test/
+│   │   ├── sprint-review/          # Sprint Review records
+│   │   ├── sprint-retrospective/   # Sprint Retrospective records
+│   │   └── sprint-log.md           # Daily Standup log (append-only)
 │   ├── operations/                 # 🟡 OPERATIONS PHASE (placeholder)
 │   ├── aidlc-state.md
 │   └── audit.md

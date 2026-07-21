@@ -1,8 +1,22 @@
-# Workflow Planning
+# Sprint Planning (Scrum Ceremony)
 
-**Purpose**: Determine which phases to execute and create comprehensive execution plan
+**Formerly Workflow Planning.**
 
-**Always Execute**: This phase always runs after understanding requirements and scope
+**Purpose**: Define the Sprint Goal, confirm the Definition of Done, select the backlog increments for this sprint, and create the execution plan for those increments.
+
+**Always Execute**: This ceremony always runs after the backlog is refined and requirements are validated.
+
+**See `common/scrum-ceremonies.md` for the sprint loop and `common/team-inputs.md` for the Definition of Done input.**
+
+## Step 0: Define Sprint Goal and Confirm Definition of Done
+
+- **Team-provided sprint plan (intake gate)**: Check for `aidlc-docs/team-inputs/sprint-plan.md`.
+  - **If present**: treat it as the source of truth. **Validate** it (do the selected stories/tasks exist in the backlog and task breakdown? is the sequence consistent with `research → design → coding` and unit dependencies?). Raise `[VALIDATION]` findings; offer `[SUGGESTION]` improvements. Do NOT regenerate it.
+  - **If absent**: facilitate creating one with the team (this is the default Sprint Planning behavior below). A team-provided plan is optional, so no hard block — but confirm scope explicitly with the team.
+- Draft or confirm a one-sentence **Sprint Goal** describing the outcome this sprint delivers.
+- Load the **Definition of Done** from `aidlc-docs/team-inputs/definition-of-done.md`. If absent, run the Input Intake Gate (see `team-inputs.md`) — ask the team to provide or waive it. The DoD is enforced at Sprint Review.
+- Confirm the sprint's increments and, for each, the typed tasks (`research`/`design`/`coding`) from the unit task map.
+- Record the Sprint Goal, DoD reference, and selected increments/tasks at the top of the sprint plan.
 
 ## Step 1: Load All Prior Context
 
@@ -12,12 +26,13 @@
 - technology-stack.md
 - dependencies.md
 
-### 1.2 Load Requirements Analysis
-- requirements.md (includes intent analysis)
+### 1.2 Load Refined Backlog and Validated Requirements
+- refined-backlog.md (from Backlog Refinement)
+- requirements.md (validation report, includes intent analysis)
 - requirement-verification-questions.md (with answers)
 
 ### 1.3 Load User Stories (if executed)
-- stories.md
+- stories.md (validated)
 - personas.md
 
 ## Step 2: Detailed Scope and Impact Analysis
@@ -221,10 +236,15 @@ linkStyle default stroke:#333,stroke-width:2px
 
 ## Step 7: Create Execution Plan Document
 
-Create `aidlc-docs/inception/plans/execution-plan.md`:
+Create `aidlc-docs/inception/plans/execution-plan.md` (the Sprint Plan):
 
 ```markdown
-# Execution Plan
+# Sprint Plan
+
+## Sprint Goal
+- **Goal**: [one-sentence sprint objective]
+- **Definition of Done**: `aidlc-docs/team-inputs/definition-of-done.md` [Provided/Waived]
+- **Increments in this sprint**: [list of units/backlog items]
 
 ## Detailed Analysis Summary
 
@@ -387,9 +407,10 @@ Update `aidlc-docs/aidlc-state.md`:
 ## Step 9: Present Plan to User
 
 ```markdown
-# 📋 Workflow Planning Complete
+# 📋 Sprint Planning Complete
 
-I've created a comprehensive execution plan based on:
+I've created a sprint plan based on:
+- Sprint Goal: [Summary]
 - Your request: [Summary]
 - Existing system: [Summary if brownfield]
 - Requirements: [Summary if executed]

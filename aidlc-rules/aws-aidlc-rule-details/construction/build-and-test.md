@@ -287,10 +287,10 @@ Create `aidlc-docs/construction/build-and-test/build-and-test-summary.md`:
 ## Overall Status
 - **Build**: [Success/Failed]
 - **All Tests**: [Pass/Fail]
-- **Ready for Operations**: [Yes/No]
+- **Ready for Sprint Review**: [Yes/No]
 
 ## Next Steps
-[If all pass]: Ready to proceed to Operations phase for deployment planning
+[If all pass]: Ready to proceed to Sprint Review to verify the increment against the Sprint Goal and Definition of Done
 [If failures]: Address failing tests and rebuild
 ```
 
@@ -333,7 +333,7 @@ Present completion message in this structure:
 > **You may:**
 >
 > 🔧 **Request Changes** - Ask for modifications to the build and test instructions based on your review
-> ✅ **Approve & Continue** - Approve build and test results and proceed to **Operations**
+> ✅ **Approve & Continue** - Approve build and test results and proceed to **Sprint Review**
 
 ---
 ```

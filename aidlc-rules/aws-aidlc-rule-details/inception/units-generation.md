@@ -30,9 +30,10 @@ This stage decomposes the system into manageable units of work through two integ
 - [ ] Generate `aidlc-docs/inception/application-design/unit-of-work.md` with unit definitions and responsibilities
 - [ ] Generate `aidlc-docs/inception/application-design/unit-of-work-dependency.md` with dependency matrix
 - [ ] Generate `aidlc-docs/inception/application-design/unit-of-work-story-map.md` mapping stories to units
+- [ ] Generate `aidlc-docs/inception/application-design/unit-of-work-task-map.md` mapping each unit's stories to their typed tasks (`research`/`design`/`coding` from `team-inputs/task-breakdown.md`), so the per-increment loop knows which stages to run and in what order (`research → design → coding`)
 - [ ] **Greenfield only**: Document code organization strategy in `unit-of-work.md` (see code-generation.md for structure patterns)
 - [ ] Validate unit boundaries and dependencies
-- [ ] Ensure all stories are assigned to units
+- [ ] Ensure all stories are assigned to units, and every typed task is carried into exactly one unit
 
 ## Step 3: Generate Context-Appropriate Questions
 **DIRECTIVE**: Thoroughly analyze the requirements, stories, and application design to identify ALL areas where clarification would improve unit decomposition quality. Be proactive in asking questions to ensure comprehensive coverage of decomposition concerns.

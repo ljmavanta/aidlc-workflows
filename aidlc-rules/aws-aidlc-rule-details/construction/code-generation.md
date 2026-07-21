@@ -12,6 +12,17 @@ This stage generates code for each unit of work through two integrated parts:
 - NFR Implementation (if executed) must be complete for the unit
 - All unit design artifacts must be available
 - Unit is ready for code generation
+- A Daily Standup entry has been recorded for this work session (see `common/daily-standup.md`)
+
+## Required Inputs (Intake Gate)
+
+**The agent does the manual coding — within the team's engineering biases.** Before generating any code, load per `common/team-inputs.md`:
+
+- `aidlc-docs/team-inputs/coding-conventions.md` — naming, formatting, structure, testing, and language/framework idioms
+- `aidlc-docs/team-inputs/architecture.md` — the target architecture the code must fit
+
+- **If present**: generated code MUST adhere to these. Non-conformance is a defect to fix, not a stylistic choice.
+- **If absent**: run the Input Intake Gate — STOP and ask the team to provide conventions/architecture or explicitly waive (a waiver authorizes the agent to follow idiomatic defaults for the detected stack, noted in the code summary).
 
 ---
 
@@ -20,6 +31,8 @@ This stage generates code for each unit of work through two integrated parts:
 ## Step 1: Analyze Unit Context
 - [ ] Read unit design artifacts from Unit Design Generation
 - [ ] Read unit story map to understand assigned stories
+- [ ] Read the unit's `coding` tasks from `aidlc-docs/inception/application-design/unit-of-work-task-map.md` — these define what to implement
+- [ ] **If a spike ran for this unit**: honor the approved recommendation in `aidlc-docs/construction/{unit-name}/research/`
 - [ ] Identify unit dependencies and interfaces
 - [ ] Validate unit is ready for code generation
 
@@ -197,6 +210,7 @@ This stage generates code for each unit of work through two integrated parts:
 ### Generation Phase Rules
 - **NO HARDCODED LOGIC**: Only execute what's written in the unit plan
 - **FOLLOW PLAN EXACTLY**: Do not deviate from the step sequence
+- **ADHERE TO TEAM CONVENTIONS**: All generated code MUST follow `team-inputs/coding-conventions.md` and fit `team-inputs/architecture.md`; note any conformance exception in the code summary
 - **UPDATE CHECKBOXES**: Mark [x] immediately after completing each step
 - **STORY TRACEABILITY**: Mark unit stories [x] when functionality is implemented
 - **RESPECT DEPENDENCIES**: Only implement when unit dependencies are satisfied
