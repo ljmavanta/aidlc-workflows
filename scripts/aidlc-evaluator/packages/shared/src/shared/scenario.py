@@ -31,6 +31,7 @@ class Scenario:
     # Relative file names within the scenario directory
     vision: str = "vision.md"
     tech_env: str = "tech-env.md"
+    team_inputs: str = "team-inputs/"
     openapi: str = "openapi.yaml"
     golden_baseline: str = "golden.yaml"
     golden_aidlc_docs: str = "golden-aidlc-docs/"
@@ -45,6 +46,10 @@ class Scenario:
     @property
     def tech_env_path(self) -> Path:
         return self.path / self.tech_env
+
+    @property
+    def team_inputs_path(self) -> Path:
+        return self.path / self.team_inputs
 
     @property
     def openapi_path(self) -> Path:
@@ -97,6 +102,7 @@ def load_scenario(test_case_path: Path) -> Scenario:
         path=test_case_path.resolve(),
         vision=data.get("vision", "vision.md"),
         tech_env=data.get("tech_env", "tech-env.md"),
+        team_inputs=data.get("team_inputs", "team-inputs/"),
         openapi=data.get("openapi", "openapi.yaml"),
         golden_baseline=data.get("golden_baseline", "golden.yaml"),
         golden_aidlc_docs=data.get("golden_aidlc_docs", "golden-aidlc-docs/"),

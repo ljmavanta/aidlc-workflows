@@ -28,6 +28,17 @@ def build_parser() -> argparse.ArgumentParser:
         help="Path to the technical environment markdown file (optional).",
     )
     parser.add_argument(
+        "--team-inputs",
+        type=Path,
+        default=None,
+        help=(
+            "Path to a directory of team-owned inputs (product-vision.md, "
+            "product-backlog.md, task-breakdown.md, architecture.md, "
+            "coding-conventions.md, definition-of-done.md). Seeded into "
+            "aidlc-docs/team-inputs/ so the Scrum workflow's intake gates find them."
+        ),
+    )
+    parser.add_argument(
         "--config",
         type=Path,
         default=None,
@@ -135,6 +146,11 @@ def main(argv: list[str] | None = None) -> None:
         print(f"Error: Technical environment file not found: {args.tech_env}", file=sys.stderr)
         sys.exit(1)
 
+    # Validate team-inputs directory exists if provided
+    if args.team_inputs is not None and not args.team_inputs.is_dir():
+        print(f"Error: Team-inputs directory not found: {args.team_inputs}", file=sys.stderr)
+        sys.exit(1)
+
     # Resolve config path
     config_path = args.config if args.config else default_config_path()
 
@@ -143,4 +159,9 @@ def main(argv: list[str] | None = None) -> None:
     config = load_config(config_path=config_path, cli_overrides=cli_overrides)
 
     # Run the workflow
-    run(config=config, vision_path=args.vision, tech_env_path=args.tech_env)
+    run(
+        config=config,
+        vision_path=args.vision,
+        tech_env_path=args.tech_env,
+        team_inputs_path=args.team_inputs,
+    )

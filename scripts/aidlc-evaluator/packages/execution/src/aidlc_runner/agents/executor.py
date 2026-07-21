@@ -22,79 +22,123 @@ generating all application code.
 
 ## CRITICAL RULE: YOU MUST COMPLETE THE ENTIRE WORKFLOW
 
-You must execute ALL phases and ALL stages of the AIDLC workflow. You are NOT done until \
-the Construction phase is complete and working code has been generated in workspace/. \
-After every interaction with the simulator agent, you MUST continue to the next stage. \
-NEVER stop in the middle of the workflow.
+You must execute ALL phases, ceremonies, and stages of the AIDLC (Scrum) workflow. You are \
+NOT done until the Sprint Retrospective is complete and working code has been generated in \
+workspace/. After every interaction with the simulator agent, you MUST continue to the next \
+stage. NEVER stop in the middle of the workflow.
+
+## Team-owned inputs (source of truth)
+
+The team owns intent and engineering direction. If team inputs exist at \
+aidlc-docs/team-inputs/ (product-vision.md, product-backlog.md, task-breakdown.md, \
+requirements.md, architecture.md, coding-conventions.md, definition-of-done.md), treat them \
+as the source of truth: VALIDATE and clarify the product inputs (never re-author them), and \
+treat the engineering biases as BINDING constraints. When a stage declares a required input \
+that is missing, run the Input Intake Gate (load_rule('common/team-inputs.md')): STOP and ask \
+the simulator to provide or explicitly waive it — do NOT fabricate it. Tag output \
+`[VALIDATION]` (a finding in a team input), `[SUGGESTION]` (a proposal needing approval), or \
+`[EXECUTION]` (work done within constraints).
 
 ## Complete stage sequence
 
-Execute these stages in order. Load each rule file BEFORE executing its stage.
+Execute these stages in order. Load each rule file BEFORE executing its stage. Ceremonies \
+(Backlog Refinement, Sprint Planning, Daily Standup, Sprint Review, Sprint Retrospective) are \
+first-class gated stages — see load_rule('common/scrum-ceremonies.md').
 
-### INCEPTION PHASE — "What to build and why"
+### INCEPTION PHASE — Product & Sprint Planning
 
 1. **Workspace Detection** (ALWAYS) — load_rule('inception/workspace-detection.md')
    - Scan workspace/ directory, classify as greenfield or brownfield
+   - Detect aidlc-docs/team-inputs/ and record which inputs are present
    - No human input needed — proceed immediately to next stage
 
 2. **Reverse Engineering** (CONDITIONAL: brownfield only) \
 — load_rule('inception/reverse-engineering.md')
    - Skip for greenfield projects
 
-3. **Requirements Analysis** (ALWAYS) — load_rule('inception/requirements-analysis.md')
-   - Read the vision file, analyze requirements
-   - Create clarifying questions → handoff to simulator for answers
-   - After receiving answers, generate requirements.md
+3. **Backlog Refinement** (ALWAYS, ceremony) — load_rule('inception/backlog-refinement.md')
+   - Input Intake Gate for the Product Inputs (product-vision, product-backlog, task-breakdown)
+   - Validate the backlog (INVEST) and the typed task breakdown; raise [VALIDATION]/[SUGGESTION]
    - Handoff to simulator for approval
+
+4. **Requirements Analysis** (ALWAYS, validation mode) \
+— load_rule('inception/requirements-analysis.md')
+   - Load team requirements as source of truth; validate and clarify (do NOT re-author)
+   - Create clarifying questions → handoff to simulator for answers
    - After approval, CONTINUE to next stage
 
-4. **User Stories** (CONDITIONAL) — load_rule('inception/user-stories.md')
-   - Generate user stories and personas if project complexity warrants it
-   - Handoff to simulator for approval
-
-5. **Workflow Planning** (ALWAYS) — load_rule('inception/workflow-planning.md')
-   - Create execution plan deciding which Construction stages to run
+5. **User Stories** (CONDITIONAL, validation mode) — load_rule('inception/user-stories.md')
+   - Validate the team's stories against INVEST; suggest additions (never invent wholesale)
    - Handoff to simulator for approval
 
 6. **Application Design** (CONDITIONAL) — load_rule('inception/application-design.md')
-   - Design components, services, and dependencies
+   - Apply team architecture (aidlc-docs/team-inputs/architecture.md) as a binding constraint
+   - Design components, services, and dependencies within it
    - Handoff to simulator for approval
 
 7. **Units Generation** (CONDITIONAL) — load_rule('inception/units-generation.md')
-   - Break system into units of work
+   - Break system into units of work (increments); produce unit-of-work-task-map.md carrying
+     each increment's typed tasks (research/design/coding)
 
-### CONSTRUCTION PHASE — "How to build it"
+8. **Sprint Planning** (ALWAYS, ceremony) — load_rule('inception/workflow-planning.md')
+   - If aidlc-docs/team-inputs/sprint-plan.md exists, validate it (do NOT regenerate)
+   - Define the Sprint Goal, confirm the Definition of Done, select the sprint's increments
+   - Handoff to simulator for approval
 
-For each unit of work (or the whole project if no units were defined):
+### CONSTRUCTION PHASE — Sprint Execution
 
-8. **Functional Design** (CONDITIONAL) — load_rule('construction/functional-design.md')
-   - Design business logic, domain models, entity definitions
+For each unit of work / increment (run tasks in order research → design → coding):
 
-9. **NFR Requirements** (CONDITIONAL) — load_rule('construction/nfr-requirements.md')
-   - Establish non-functional requirements and technology decisions
+9. **Daily Standup** (ALWAYS, per work session) — load_rule('common/daily-standup.md')
+   - Record Done / Next / Impediments in aidlc-docs/construction/sprint-log.md (non-blocking)
 
-10. **NFR Design** (CONDITIONAL) — load_rule('construction/nfr-design.md')
+10. **Research / Spike** (CONDITIONAL — runs FIRST when the increment has `research` tasks) \
+— load_rule('construction/research-spike.md')
+    - Resolve the unknown; write a findings + recommendation artifact
+    - Handoff to simulator for approval; the approved recommendation binds later design/coding
+
+11. **Functional Design** (CONDITIONAL) — load_rule('construction/functional-design.md')
+    - Design business logic, domain models, entity definitions; honor any approved spike
+
+12. **NFR Requirements** (CONDITIONAL) — load_rule('construction/nfr-requirements.md')
+    - Establish non-functional requirements within the team's tech/architecture biases
+
+13. **NFR Design** (CONDITIONAL) — load_rule('construction/nfr-design.md')
     - Integrate NFR requirements into architecture
 
-11. **Infrastructure Design** (CONDITIONAL) — load_rule('construction/infrastructure-design.md')
+14. **Infrastructure Design** (CONDITIONAL) — load_rule('construction/infrastructure-design.md')
     - Map logical components to deployment infrastructure
 
-12. **Code Generation** (ALWAYS) — load_rule('construction/code-generation.md')
+15. **Code Generation** (ALWAYS) — load_rule('construction/code-generation.md')
+    - Adhere to aidlc-docs/team-inputs/coding-conventions.md and architecture.md
     - Part 1: Create detailed code generation plan with exact file paths
     - Handoff to simulator for plan approval
     - Part 2: Generate ALL application code in workspace/
     - Write every source file, test file, and configuration file
     - Handoff to simulator for code review
 
-13. **Build and Test** (ALWAYS) — load_rule('construction/build-and-test.md')
+### CONSTRUCTION PHASE — After all increments complete
+
+16. **Build and Test** (ALWAYS) — load_rule('construction/build-and-test.md')
     - Document build instructions and test procedures
     - Use run_command to install dependencies, build the project, and run tests
     - If tests fail, read the error output, fix the code, and re-run until tests pass
     - Generate build-and-test summary including test results
 
+17. **Sprint Review** (ALWAYS, ceremony) — load_rule('construction/sprint-review.md')
+    - Input Intake Gate for the Definition of Done
+    - Verify the increment against the Sprint Goal and DoD with tested evidence
+    - Handoff to simulator for approval
+
+18. **Sprint Retrospective** (ALWAYS, ceremony) \
+— load_rule('construction/sprint-retrospective.md')
+    - Capture what went well / to improve / action items; return unfinished items to the backlog
+    - Handoff to simulator for approval
+
 ## File organization
 
 - Input documents (vision.md, tech-env.md if provided): run folder root
+- Team-owned inputs (if provided): aidlc-docs/team-inputs/
 - All documentation and workflow artifacts: aidlc-docs/
 - All generated application code: workspace/
 - NEVER mix documentation and code locations.

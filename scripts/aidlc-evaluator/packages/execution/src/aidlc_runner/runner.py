@@ -129,11 +129,40 @@ def setup_rules(run_folder: Path, config: RunnerConfig) -> Path:
     return rules_dest
 
 
+def seed_team_inputs(run_folder: Path, team_inputs_path: Path) -> Path:
+    """Copy team-owned inputs into ``aidlc-docs/team-inputs/`` in the run folder.
+
+    The Scrum workflow's Input Intake Gates look for team inputs at
+    ``aidlc-docs/team-inputs/`` (product-vision.md, product-backlog.md,
+    task-breakdown.md, architecture.md, coding-conventions.md,
+    definition-of-done.md). This seeds them from a scenario's ``team-inputs/``
+    directory so the gates find the files present instead of blocking.
+
+    Args:
+        run_folder: The run folder (must already contain ``aidlc-docs/``).
+        team_inputs_path: Source directory of team inputs.
+
+    Returns:
+        Path to the seeded ``aidlc-docs/team-inputs/`` directory.
+
+    Raises:
+        FileNotFoundError: If *team_inputs_path* is not a directory.
+    """
+    if not team_inputs_path.is_dir():
+        raise FileNotFoundError(f"Team-inputs directory not found: {team_inputs_path}")
+
+    dest = run_folder / "aidlc-docs" / "team-inputs"
+    # dirs_exist_ok so re-seeding (e.g. brownfield continuation) is idempotent
+    shutil.copytree(team_inputs_path, dest, dirs_exist_ok=True)
+    return dest
+
+
 def write_run_meta(
     run_folder: Path,
     config: RunnerConfig,
     vision_path: Path,
     tech_env_path: Path | None = None,
+    team_inputs_path: Path | None = None,
 ) -> None:
     """Write run metadata to run-meta.yaml."""
     # Use paths relative to the current working directory for portability
@@ -145,12 +174,17 @@ def write_run_meta(
         tech_env_rel = str(tech_env_path.resolve().relative_to(Path.cwd())) if tech_env_path else None
     except ValueError:
         tech_env_rel = str(tech_env_path) if tech_env_path else None
+    try:
+        team_inputs_rel = str(team_inputs_path.resolve().relative_to(Path.cwd())) if team_inputs_path else None
+    except ValueError:
+        team_inputs_rel = str(team_inputs_path) if team_inputs_path else None
 
     meta = {
         "run_folder": str(run_folder),
         "started_at": datetime.now(timezone.utc).isoformat(),
         "vision_file": vision_rel,
         "tech_env_file": tech_env_rel,
+        "team_inputs_dir": team_inputs_rel,
         "config": {
             "aws_profile": config.aws.profile,
             "aws_region": config.aws.region,
@@ -172,13 +206,20 @@ def write_run_meta(
     atomic_yaml_dump(meta, run_folder / "run-meta.yaml")
 
 
-def run(config: RunnerConfig, vision_path: Path, tech_env_path: Path | None = None) -> None:
+def run(
+    config: RunnerConfig,
+    vision_path: Path,
+    tech_env_path: Path | None = None,
+    team_inputs_path: Path | None = None,
+) -> None:
     """Execute a full AIDLC workflow run.
 
     Args:
         config: Fully resolved runner configuration.
         vision_path: Path to the vision/constraints markdown file.
         tech_env_path: Optional path to the technical environment markdown file.
+        team_inputs_path: Optional directory of team-owned inputs, seeded into
+            ``aidlc-docs/team-inputs/`` for the Scrum workflow's intake gates.
     """
     # 1. Create run folder
     run_folder = create_run_folder(config.runs.output_dir, config)
@@ -194,13 +235,24 @@ def run(config: RunnerConfig, vision_path: Path, tech_env_path: Path | None = No
         tech_env_content = tech_env_path.read_text(encoding="utf-8")
         (run_folder / "tech-env.md").write_text(tech_env_content, encoding="utf-8")
 
+    # 2c. Seed team-owned inputs into aidlc-docs/team-inputs/ if provided
+    seeded_team_inputs: list[str] = []
+    if team_inputs_path is not None:
+        dest = seed_team_inputs(run_folder, team_inputs_path)
+        seeded_team_inputs = sorted(p.name for p in dest.glob("*.md"))
+        print(f"Seeded team inputs into {dest}: {', '.join(seeded_team_inputs) or '(none)'}")
+
     # 3. Set up AIDLC rules
     print("Setting up AIDLC rules...")
     rules_dir = setup_rules(run_folder, config)
     print(f"Rules ready: {rules_dir}")
 
     # 4. Write run metadata
-    write_run_meta(run_folder, config, vision_path, tech_env_path=tech_env_path)
+    write_run_meta(
+        run_folder, config, vision_path,
+        tech_env_path=tech_env_path,
+        team_inputs_path=team_inputs_path,
+    )
 
     # 5. Create metrics collector and agents with progress handlers
     print("Creating agents...")
@@ -240,13 +292,22 @@ def run(config: RunnerConfig, vision_path: Path, tech_env_path: Path | None = No
             "testing standards, and prohibited technologies. Follow it as a binding reference "
             "during all Construction stages. "
         )
+    if seeded_team_inputs:
+        initial_prompt += (
+            "The team has provided team-owned inputs at aidlc-docs/team-inputs/ "
+            f"({', '.join(seeded_team_inputs)}). Treat these as the source of truth: "
+            "validate and clarify the product inputs (do NOT re-author them), and treat the "
+            "engineering biases (architecture, coding conventions, definition-of-done) as "
+            "binding constraints. Run the Input Intake Gate for any required input that is "
+            "missing. "
+        )
     initial_prompt += (
         "Start by loading the core workflow rules and the process overview, then "
         "execute every stage of the Inception phase followed by every stage of the "
         "Construction phase. The workspace directory is 'workspace/' (currently empty — "
         "this is a greenfield project). You MUST generate all application code in "
         "workspace/ before the workflow is complete. Do NOT stop after requirements — "
-        "continue through application design, code generation, and build-and-test."
+        "continue through the ceremonies and stages to code generation and build-and-test."
     )
 
     swarm = Swarm(

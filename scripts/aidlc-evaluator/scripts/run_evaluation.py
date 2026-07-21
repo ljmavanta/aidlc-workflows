@@ -190,6 +190,7 @@ def _save_evaluation_config(
         "cli_args": {
             "vision": _rel(args.vision),
             "tech_env": _rel(args.tech_env),
+            "team_inputs": _rel(args.team_inputs),
             "golden": _rel(args.golden),
             "openapi": _rel(args.openapi),
             "evaluate_only": _rel(args.evaluate_only),
@@ -318,6 +319,8 @@ def stage_execute(args: argparse.Namespace) -> Path | None:
     ]
     if args.tech_env:
         cmd += ["--tech-env", str(args.tech_env)]
+    if getattr(args, "team_inputs", None):
+        cmd += ["--team-inputs", str(args.team_inputs)]
     if args.profile:
         cmd += ["--aws-profile", args.profile]
     if args.region:
@@ -593,6 +596,11 @@ def build_parser() -> argparse.ArgumentParser:
         "--tech-env", type=Path, default=None,
         help="Path to technical environment markdown file (default: from scenario)",
     )
+    parser.add_argument(
+        "--team-inputs", type=Path, default=None,
+        help="Path to team-owned inputs directory seeded into aidlc-docs/team-inputs/ "
+             "(default: from scenario if present)",
+    )
 
     # Evaluation-only mode
     parser.add_argument(
@@ -702,6 +710,11 @@ def main() -> None:
         args.vision = scenario.vision_path
     if args.tech_env is None:
         args.tech_env = scenario.tech_env_path
+    if args.team_inputs is None:
+        # team-inputs is optional; only default it when the scenario ships one
+        candidate = scenario.team_inputs_path
+        if candidate.is_dir():
+            args.team_inputs = candidate
     if args.golden is None:
         args.golden = scenario.golden_aidlc_docs_path
     if args.openapi is None:
@@ -781,6 +794,7 @@ def main() -> None:
     print(f"  Config:    {args.config}")
     print(f"  Vision:    {args.vision}")
     print(f"  Tech-env:  {args.tech_env or '(none)'}")
+    print(f"  Team-inputs: {args.team_inputs or '(none)'}")
     print(f"  OpenAPI:   {args.openapi or '(none)'}")
     print(f"  Golden:    {args.golden}")
     print(f"  Baseline:  {args.baseline or '(none)'}")
